@@ -8,7 +8,7 @@ pub fn brackets_are_balanced(string: &str) -> bool {
         .cloned()
         .collect();
     let is_opening = |c| brackets.contains_key(&c);
-    let is_closing = |c| brackets.values().position(|&v| v == c).is_some();
+    let is_closing = |c| brackets.values().any(|&v| v == c);
 
     for c in string.chars() {
         if is_opening(c) {
