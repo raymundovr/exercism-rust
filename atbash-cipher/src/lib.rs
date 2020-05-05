@@ -1,20 +1,20 @@
-fn swap(input: char) -> char {
-    let d = input as u8;
-    let output = match d >= 97 && d <= 122 {
-        true => 97 + (25 - (d - 97)),
-        false => d,
-    };
-
-    output as char
+fn swap(input: char) -> Option<char> {
+    let d = input.to_ascii_lowercase() as u8;
+    match d {
+        b'a'..=b'z' => {
+            let d: u8 = 97 + (25 - (d - 97));
+            Some(d as char)
+        }
+        b'0'..=b'9' => Some(input),
+        _ => None,
+    }
 }
 
 /// "Encipher" with the Atbash cipher.
 pub fn encode(plain: &str) -> String {
     plain
-        .to_lowercase()
         .chars()
-        .filter(|c| c.is_alphanumeric())
-        .map(|c| swap(c))
+        .filter_map(|c| swap(c))
         .collect::<Vec<char>>()
         .chunks(5)
         .map(|c| c.into_iter().collect())
@@ -24,5 +24,5 @@ pub fn encode(plain: &str) -> String {
 
 /// "Decipher" with the Atbash cipher.
 pub fn decode(cipher: &str) -> String {
-    cipher.replace(" ", "").chars().map(|c| swap(c)).collect()
+    cipher.chars().filter_map(|c| swap(c)).collect()
 }
